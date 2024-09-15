@@ -1,0 +1,5 @@
+class PetBody{
+    constructor(){
+        
+    }
+}

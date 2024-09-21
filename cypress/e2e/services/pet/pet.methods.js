@@ -1,4 +1,5 @@
 import { CommonData } from "../common/common.data"
+import { PetBodyBuilder } from "./pet-body.builder";
 
 export class PetMethods {
     static addPet(body, headers = CommonData.header) {
@@ -7,6 +8,31 @@ export class PetMethods {
             url: '/pet',
             headers: headers,
             body: body
+        })
+    }
+
+    static updatePet(body, headers = CommonData.header) {
+        return cy.request({
+            method: 'PUT',
+            url: '/pet',
+            headers: headers,
+            body: body
+        })
+    }
+
+    static getPetById(petId, headers = CommonData.header) {
+        return cy.request({
+            method: 'GET',
+            url: `/pet/${petId}`,
+            headers: headers
+        })
+    }
+
+    static getPetsByStatus(status, headers = CommonData.header) {
+        return cy.request({
+            method: 'GET',
+            url: `/pet/findByStatus?status=${status}`,
+            headers: headers
         })
     }
 
@@ -36,5 +62,40 @@ export class PetMethods {
         const item = arr[randomIndex];
 
         return item;
+    }
+
+    static createAvailablePet(petId) {
+        const body = new PetBodyBuilder().setBodyWithRandomData().setStatus('available').setPetId(petId).build();
+        return this.addPet(body);
+    }
+
+    static createSoldPet(petId) {
+        const body = new PetBodyBuilder().setBodyWithRandomData().setStatus('sold').setPetId(petId).build();
+        return this.addPet(body);
+    }
+
+    static createPendingPet(petId) {
+        const body = new PetBodyBuilder().setBodyWithRandomData().setStatus('pending').setPetId(petId).build();
+        return this.addPet(body);
+    }
+
+    static verifyPetsListStatus(petList, status) {
+        let differentStatusFound = false;
+        petList.forEach(pet => {
+            if (pet.status != status) {
+                differentStatusFound = true;
+            }
+        })
+        expect(differentStatusFound).to.equal(false)
+    }
+
+    static verifyPetIdIncludedInTheList(petList, petId) {
+        let petFound = false;
+        petList.forEach(pet => {
+            if (pet.id == petId) {
+                petFound = true;
+            }
+        })
+        expect(petFound).to.equal(true)
     }
 }

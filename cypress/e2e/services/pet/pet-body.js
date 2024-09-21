@@ -1,4 +1,4 @@
-class PetBody{
+export class PetBody{
     constructor(){
         
     }

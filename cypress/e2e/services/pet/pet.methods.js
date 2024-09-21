@@ -20,11 +20,12 @@ export class PetMethods {
         })
     }
 
-    static getPetById(petId, headers = CommonData.header) {
+    static getPetById(petId, headers = CommonData.header, failOnStatusCode = true) {
         return cy.request({
             method: 'GET',
             url: `/pet/${petId}`,
-            headers: headers
+            headers: headers,
+            failOnStatusCode: failOnStatusCode
         })
     }
 
@@ -33,6 +34,14 @@ export class PetMethods {
             method: 'GET',
             url: `/pet/findByStatus?status=${status}`,
             headers: headers
+        })
+    }
+
+    static deletePet(petId, apiKey) {
+        return cy.request({
+            method: 'DELETE',
+            url: `/pet/${petId}`,
+            headers: { 'api_key': apiKey }
         })
     }
 
@@ -97,5 +106,15 @@ export class PetMethods {
             }
         })
         expect(petFound).to.equal(true)
+    }
+
+    static verifyPetIdNotIncludedInTheList(petList, petId) {
+        let petFound = false;
+        petList.forEach(pet => {
+            if (pet.id == petId) {
+                petFound = true
+            }
+        })
+        expect(petFound).to.equal(false)
     }
 }

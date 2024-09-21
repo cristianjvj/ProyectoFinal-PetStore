@@ -42,6 +42,44 @@ describe('Find pet', () => {
             expect(response.status).to.equal(200)
             PetMethods.verifyPetsListStatus(response.body, 'available')
             PetMethods.verifyPetIdIncludedInTheList(response.body, availablePetId)
+            PetMethods.verifyPetIdNotIncludedInTheList(response.body, soldPetId)
+            PetMethods.verifyPetIdNotIncludedInTheList(response.body, pendingPetId)
+        })
+    })
+
+    it('Find pet in status sold', () => {
+        const availablePetId = PetMethods.generatePetId()
+        const soldPetId = PetMethods.generatePetId()
+        const pendingPetId = PetMethods.generatePetId()
+
+        PetMethods.createAvailablePet(availablePetId)
+        PetMethods.createSoldPet(soldPetId)
+        PetMethods.createPendingPet(pendingPetId)
+
+        PetMethods.getPetsByStatus('sold').then(response => {
+            expect(response.status).to.equal(200)
+            PetMethods.verifyPetsListStatus(response.body, 'sold')
+            PetMethods.verifyPetIdIncludedInTheList(response.body, soldPetId)
+            PetMethods.verifyPetIdNotIncludedInTheList(response.body, availablePetId)
+            PetMethods.verifyPetIdNotIncludedInTheList(response.body, pendingPetId)
+        })
+    })
+
+    it('Find pet in status pending', () => {
+        const availablePetId = PetMethods.generatePetId()
+        const soldPetId = PetMethods.generatePetId()
+        const pendingPetId = PetMethods.generatePetId()
+
+        PetMethods.createAvailablePet(availablePetId)
+        PetMethods.createSoldPet(soldPetId)
+        PetMethods.createPendingPet(pendingPetId)
+
+        PetMethods.getPetsByStatus('pending').then(response => {
+            expect(response.status).to.equal(200)
+            PetMethods.verifyPetsListStatus(response.body, 'pending')
+            PetMethods.verifyPetIdIncludedInTheList(response.body, pendingPetId)
+            PetMethods.verifyPetIdNotIncludedInTheList(response.body, availablePetId)
+            PetMethods.verifyPetIdNotIncludedInTheList(response.body, soldPetId)
         })
     })
 })
